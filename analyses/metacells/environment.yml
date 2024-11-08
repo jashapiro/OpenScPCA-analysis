@@ -17,6 +17,7 @@ dependencies:
   - cycler
   - fastcluster
   - fcsparser
+  - gitpython
   - h5py
   - jax
   - jaxopt
@@ -26,9 +27,11 @@ dependencies:
   - mellon
   - numpy
   - pandas
+  - papermill
   - progressbar2
   - pygam==0.9.0
   - python-utils
+  - quarto
   - scanpy
   - scikit-learn
   - scipy

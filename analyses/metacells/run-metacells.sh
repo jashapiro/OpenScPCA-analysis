@@ -25,11 +25,5 @@ python scripts/run-seacells.py \
   --logfile ${results_dir}/${library}_seacells.log \
   --seed 2024
 
-# set up the rendering environment for the metacells notebook
-ipython kernel install --user --name=openscpca-metacells
-
 echo "Rendering test notebook"
-quarto render notebooks/testing-seacells.qmd \
-  -P project_id:${project} \
-  -P sample_id:${sample} \
-  -P library_id:${library}
+jupyter nbconvert --execute --to html notebooks/testing-seacells.ipynb

@@ -1,4 +1,4 @@
-# Dockerfile for the hello-python analysis
+# Dockerfile for the metacell analysis
 FROM condaforge/miniforge3:24.9.0-0
 
 # Labels following the Open Containers Initiative (OCI) recommendations

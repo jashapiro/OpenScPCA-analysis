@@ -12,6 +12,10 @@ import datetime
 import pathlib
 import pickle
 import sys
+import warnings
+
+# quiet future warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 import anndata
 import numpy as np

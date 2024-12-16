@@ -27,10 +27,24 @@ get_cluster_stats <- function(sce,
   # for each nn_param get cluster width and purity
   all_stats_df <- split_clusters |>
     purrr::map(\(df){
-      sil_df <- bluster::approxSilhouette(pcs, df$cluster) |>
-        as.data.frame() |>
-        tibble::rownames_to_column("cell_id")
-
+      
+      # make sure there are multiple clusters present, otherwise width can't be computed
+      cluster_num <- length(unique(df$cluster))
+      
+      if(cluster_num == 1){
+        sil_df <- data.frame(
+          cell_id = df$cell_id,
+          cluster = df$cluster,
+          other = NA,
+          width = NA
+        )
+      } else {
+        sil_df <- bluster::approxSilhouette(pcs, df$cluster) |>
+          as.data.frame() |>
+          tibble::rownames_to_column("cell_id") 
+      }
+      
+      # purity can all be from one cluster 
       purity_df <- bluster::neighborPurity(pcs, df$cluster) |>
         as.data.frame() |>
         tibble::rownames_to_column("cell_id")
@@ -50,7 +64,8 @@ get_cluster_stats <- function(sce,
 # get cluster stability for each unique combination of params used for clustering
 # must have `cluster_params` column
 get_cluster_stability <- function(sce,
-                                  all_cluster_results) {
+                                  all_cluster_results,
+                                  threads = 1) {
   pcs <- reducedDim(sce, "PCA")
   
   # split clustering results by param used
@@ -73,7 +88,8 @@ get_cluster_stability <- function(sce,
                                       algorithm = unique(df$algorithm),
                                       nn = unique(df$nn),
                                       resolution = unique(df$resolution),
-                                      objective_function = objective_function)
+                                      objective_function = objective_function,
+                                      threads = threads)
       
     }) |>
     dplyr::bind_rows(.id = "cluster_params")
@@ -87,6 +103,9 @@ get_cluster_stability <- function(sce,
 plot_cluster_stats <- function(all_stats_df,
                                stat_column,
                                plot_title) {
+  
+  nn_range <- unique(all_stats_df$nn)
+  
   ggplot(all_stats_df, aes(x = nn, y = {{ stat_column }})) +
     # ggforce::geom_sina(size = .2) +
     ggbeeswarm::geom_quasirandom(method = "smiley", size = 0.1) +
@@ -106,12 +125,15 @@ plot_cluster_stats <- function(all_stats_df,
     ) +
     labs(
       title = plot_title
-    )
+    ) +
+    scale_x_continuous(breaks = nn_range)
 }
 
 # plot cluster stability 
 plot_cluster_stability <- function(stat_df,
                                    plot_title){
+  
+  nn_range <- unique(all_stats_df$nn)
   
   ggplot(stability_df, aes(x = nn, y = ari)) +
     geom_jitter(width = 0.1) +
@@ -132,26 +154,29 @@ plot_cluster_stability <- function(stat_df,
     ) +
     labs(
       title = plot_title
-    )
+    ) +
+    scale_x_continuous(breaks = nn_range)
   
 }
 
 
 # heatmap comparing cluster assignments to SingleR labels
 cluster_celltype_heatmap <- function(cluster_classification_df) {
+  
   # get a jaccard mtx for each cluster param
   jaccard_df_list <- cluster_classification_df |>
-    split(cluster_classification_df$nn_param) |>
+    split(cluster_classification_df$nn_char) |>
     purrr::map(\(df) {
       make_jaccard_matrix(
         df,
         "cluster",
         "singler_lumped"
-      )
+      ) |>
+        t() # not every value of k has the same number of clusters and we need columns to match
     })
-
+  
   # turn into heatmap list
-  make_heatmap_list(jaccard_df_list, column_title = "clusters", legend_match = "k_5", cluster_rows = FALSE)
+  make_heatmap_list(jaccard_df_list, column_title = "clusters", legend_match = "nn-5", cluster_rows = FALSE)
 }
 
 
@@ -162,7 +187,7 @@ plot_marker_genes <- function(cluster_exp_df,
                               k_value) {
   # pick clustering to use and select those columns
   final_clusters_df <- cluster_exp_df |>
-    dplyr::filter(nn_param == k_value)
+    dplyr::filter(nn == k_value)
 
   # grab columns that contain marker gene sums
   marker_gene_columns <- colnames(final_clusters_df)[which(endsWith(colnames(final_clusters_df), "_sum"))]
@@ -177,5 +202,5 @@ plot_marker_genes <- function(cluster_exp_df,
       ) +
         labs(y = "Cluster")
     }) |>
-    patchwork::wrap_plots(ncol = 2) + patchwork::plot_annotation(glue::glue("{k_value}-clusters"))
+    patchwork::wrap_plots(ncol = 2) + patchwork::plot_annotation(glue::glue("nn-{k_value}"))
 }

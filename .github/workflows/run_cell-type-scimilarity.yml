@@ -35,13 +35,13 @@ jobs:
     runs-on: openscpca-22.04-big-disk
     container: public.ecr.aws/openscpca/cell-type-scimilarity:latest
     defaults:
-      run: 
+      run:
         shell: bash -el {0}
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
-        
+        uses: actions/checkout@v7
+
       # Update this step as needed to download the desired data
       # pick a few random projects for now
       - name: Download test data
@@ -56,7 +56,7 @@ jobs:
 
           cd ${MODULE_PATH}
           ./setup-analysis.sh
-          
+
           for project in $projects; do
               ./run-scimilarity.sh $project
           done

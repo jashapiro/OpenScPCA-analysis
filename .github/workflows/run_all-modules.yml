@@ -38,27 +38,27 @@ jobs:
     uses: ./.github/workflows/run_cell-type-wilms-tumor-14.yml
 
   cell-type-ETP-ALL-03:
-      uses: ./.github/workflows/run_cell-type-ETP-ALL-03.yml
+    uses: ./.github/workflows/run_cell-type-ETP-ALL-03.yml
 
   cell-type-nonETP-ALL-03:
-      uses: ./.github/workflows/run_cell-type-nonETP-ALL-03.yml
-  
+    uses: ./.github/workflows/run_cell-type-nonETP-ALL-03.yml
+
   cell-type-neuroblastoma-04:
     uses: ./.github/workflows/run_cell-type-neuroblastoma-04.yml
 
   cell-type-scimilarity:
-      uses: ./.github/workflows/run_cell-type-scimilarity.yml
+    uses: ./.github/workflows/run_cell-type-scimilarity.yml
 
   cell-type-consensus:
-      uses: ./.github/workflows/run_cell-type-consensus.yml
+    uses: ./.github/workflows/run_cell-type-consensus.yml
 
   infercnv-consensus-cell-type:
-      uses: ./.github/workflows/run_infercnv-consensus-cell-type.yml
+    uses: ./.github/workflows/run_infercnv-consensus-cell-type.yml
 
   seurat-conversion:
-      uses: ./.github/workflows/run_seurat-conversion.yml
+    uses: ./.github/workflows/run_seurat-conversion.yml
 
-      ## Add additional modules above this comment, and to the needs list below
+    ## Add additional modules above this comment, and to the needs list below
   check-jobs:
     if: ${{ always() }}
     needs:
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout template file
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           sparse-checkout: |
             .github/cron-issue-templates/all-modules-issue-template.md

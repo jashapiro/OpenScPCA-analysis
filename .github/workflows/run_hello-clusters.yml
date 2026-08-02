@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up pandoc
         uses: r-lib/actions/setup-pandoc@v2
@@ -58,4 +58,3 @@ jobs:
         run: |
           cd ${MODULE_PATH}
           ./run_hello-clusters.sh
-

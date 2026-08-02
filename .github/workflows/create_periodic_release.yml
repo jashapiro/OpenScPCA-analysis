@@ -1,4 +1,4 @@
-# This manually-triggered workflow should be run to create a periodic release 
+# This manually-triggered workflow should be run to create a periodic release
 name: Create a release tagged with today's date
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Get date
         run: echo "TODAY=$(date -I)" >> $GITHUB_ENV

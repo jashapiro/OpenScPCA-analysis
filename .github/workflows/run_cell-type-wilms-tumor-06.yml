@@ -41,7 +41,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install aws-cli
         run: |
@@ -60,7 +60,6 @@ jobs:
         run: |
           ./download-data.py --test-data --format SCE ${DOWNLOAD_FLAG}
           ./download-data.py --test-data --metadata-only --projects SCPCP000006
-
 
       - name: Run analysis module
         run: TESTING=1 RUN_EXPLORATORY=0 bash 00_run_workflow.sh

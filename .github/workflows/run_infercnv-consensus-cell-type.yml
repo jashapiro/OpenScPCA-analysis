@@ -5,7 +5,6 @@
 # - On pull requests where code in the module has changed
 # - As a reusable workflow called from a separate workflow which periodically runs all modules
 
-
 name: Run infercnv-consensus-cell-type analysis module
 env:
   MODULE_PATH: analyses/infercnv-consensus-cell-type
@@ -39,7 +38,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install aws-cli
         run: |

@@ -41,7 +41,7 @@ jobs:
           files: ${{ (github.event_name == 'pull_request' && !startsWith(github.head_ref, 'spelling/')) && 'docs/* docs/*/* docs/*/*/* *.md' || null }}
 
       - name: Upload spell check errors
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         id: artifact-upload-step
         with:
           name: spell_check_errors
